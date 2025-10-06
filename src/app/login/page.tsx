@@ -2,15 +2,29 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { set } from "mongoose";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Logging in with:", { email, password });
-    alert('login coming sooon!');
+   
+    
+    const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (res.ok){
+        localStorage.setItem('token', data.token);
+        window.location.href = '/dashboard';
+      }
+      setLoading(false)
   };
 
 

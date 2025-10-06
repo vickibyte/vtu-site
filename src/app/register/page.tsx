@@ -1,17 +1,26 @@
 'use client'
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+     const [password, setPassword] = useState("");const [loading, setLoading] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Registering with:", { name, email, password });
-    alert('Registration coming soon!');
+    setLoading(true);
+
+    const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+      setLoading(false);
   };
 
 
@@ -44,7 +53,7 @@ export default function RegisterPage() {
         required/>
 
 
-        <button className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 cursor-pointer">Register</button>
+        <button disabled={loading} className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 cursor-pointer">{loading ? "Loading..." : "Register"}</button>
 
         <p className="text-sm text-center mt-3">Already have an account? <Link href="/login" className="text-blue-600 hover:underline">Login</Link></p>
       </form>
