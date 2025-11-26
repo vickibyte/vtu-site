@@ -1,63 +1,38 @@
 "use client";
 
 
-import { useEffect, useState } from "react";
 
-interface User {
-    _id: string;
-    name: string;
-    email: string;
-    createdAt: string;
-}
+import AdminLayout from "@/components/AdminLayout";
+import StatCard from "@/components/StatCard";
+import ChartCard from "@/components/ChartCard";
+
+
+
 
 export default function AdminPage(){
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchUsers = async () =>{
-            try{
-                const res = await fetch("/api/users");
-
-                const data = await res.json();
-                console.log("API response:", data);
-                setUsers(Array.isArray(data) ? data : []);
-            } catch (err) {
-                console.error(err);
-            } finally{
-                setLoading(false);
-            }
-        };
-        fetchUsers()
-    }, []);
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
-            {loading ? (
-                <p>Loading users...</p>
-            ): (
-                <table className="w-full border-collapse border  border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border border-gray-300 p-2">Name</th>
-                            <th className="border border-gray-300 p-2">Email</th>
-                            <th className="border border-gray-300 p-2">Created</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => (
-                            <tr key={user._id}>
-                                <td className="border border-gray-300 p-2">
-                                    {user.name}
-                                </td>
-                                <td className="border border-gray-300 p-2">{user.email}</td>
-                                <td className="border border-gray-300 p-2">{new Date(user.createdAt).toLocaleString()}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+        
+        <AdminLayout>
+        <div className="">
+           
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+            <h1 className="text-xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p className="text-sm text-gray-500">Business goes thus...</p>
         </div>
+
+        <div className="grid md:grid-cols gap-4">
+            <StatCard title="New Users" value="57" color="bg-green-50" status="Active users"/>
+            <StatCard title="Pending Orders" value="5" color="bg-yellow-50" status="Awaiting approval"/>
+            <StatCard title="Failed Payments" value="3" color="bg-red-50" status="Complaints"/>
+        </div>
+
+      </div>
+        
+        </div>
+        <ChartCard />
+        </AdminLayout>
+
     );
 }
